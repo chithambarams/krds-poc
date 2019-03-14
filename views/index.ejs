@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head> 
+	<title> ToDo App </title>
+	<link href="https://fonts.googleapis.com/css?family=Lato:100" rel="stylesheet">
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+
+	<!-- jQuery library -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+	<!-- Latest compiled JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+	<link href="/styles.css" rel="stylesheet">
+</head>
+
+<body>
+	<div class="container">
+		<div class="col-md-12 row">
+			<h2 class="body_title">Personal TODO List - KRDS India</h2>
+			<div class="main_div">
+				<form action="/addtask" method="POST">
+					<div classs="form-group">
+						<div class="task_section">
+							<span class="down_icon glyphicon glyphicon-menu-down"></span><input type="text" name="newtask" class="form-control task_name" maxlength="100" pattern="[a-zA-z0-9-_\s]+" autocomplete="off" placeholder="What's in your mind?">
+						</div>
+					</form>
+					<ul class="added_items">
+						<% for( var i = 0; i < task.length; i++){ %>
+						<li class="item_<%= task[i].id %>">
+							<span class="mark_as_complete" data-value="<%= task[i].id %>"><% if(task[i].status == 0) { %><img src="/images/circle.png"><% } else { %><img src="/images/tick-new.png"><% } %></span>
+							<span class="item_name <% if(task[i].status == 0) { %>yet_to_complete <% } else { %>completed<% } %>"><%= task[i].todo_list %></span>
+							<span class="remove_item" data-value="<%= task[i].id %>"><img src="/images/delete-sign.png"></span>
+						</li>
+						<% } %>
+						<li class="remaining"><span><%= cnt %></span> items completed</li>
+					</ul>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</body>
+
+<script type="text/javascript">
+	$(function(e)
+	{
+		$(".task_name").focus();
+		$("body").on("click",".mark_as_complete", function(e)
+		{
+			var parameters = { id: $(this).attr('data-value') };
+			$.post('/updatetask', parameters, function(data){
+	        	var task_id = data.task_id;
+	        	$(".item_"+task_id).css('text-decoration','line-through');
+	        	$(".item_"+task_id+" span.mark_as_complete img").attr('src','/images/tick-new.png');
+	        	$(".remaining span").html(data.cnt);
+	   		});
+		});
+
+		$("body").on("click",".remove_item", function(e)
+		{
+			var parameters = { id: $(this).attr('data-value') };
+			$.post('/removetask', parameters, function(data){
+	        	var task_id = data.task_id;
+	        	$(".item_"+task_id).remove();
+	        	$(".remaining span").html(data.cnt);
+	   		});
+		});		
+	});
+</script>
+
+</html>
