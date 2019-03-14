@@ -2,10 +2,10 @@
 var mysql = require('mysql');
 
 var con = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "krds_poc"
+  host: "192.81.208.136",
+  user: "gotcrm_krdspoc",
+  password: "krdsindia12345",
+  database: "gotcrm_krds_poc"
 });
 
 con.connect(function(err) {
