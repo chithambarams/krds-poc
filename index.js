@@ -60,8 +60,8 @@ app.post("/updatetask", function(req, res) {
 
     var today = new Date();
     var dt = today.getFullYear()+'-'+today.getMonth()+'-'+today.getDate()+' '+today.getHours()+':'+today.getMinutes()+':'+today.getSeconds();
-    var sql = "UPDATE todo_list SET status=?,date_completed=? WHERE id=?";
-    var values = [1,dt,task_id];
+    var sql = "UPDATE todo_list SET status=? WHERE id=?";
+    var values = [1,task_id];
     con.query(sql, values,function (err, result) {
         if (err) throw err;
     });
@@ -77,7 +77,7 @@ app.post("/updatetask", function(req, res) {
 //render the ejs and display added task, completed task
 app.get("/", function(req, res) {
     
-        con.query("SELECT (SELECT COUNT(*) FROM todo_list WHERE status=1) AS cnt, ID,todo_list,status,date_created,date_completed FROM todo_list ORDER BY ID DESC", function (err, result, fields) {
+        con.query("SELECT (SELECT COUNT(*) FROM todo_list WHERE status=1) AS cnt, ID,todo_list,status,date_created FROM todo_list ORDER BY ID DESC", function (err, result, fields) {
         if (err) throw err;
         //Return the fields object:
         var task_array = []; var cnt = 0;
@@ -93,7 +93,7 @@ app.get("/", function(req, res) {
             }
             else
             {
-                completed_array.push({"todo_list":row.todo_list,"date_created":row.date_created,"id":row.ID,"date_completed":row.date_completed,"status":row.status});
+                completed_array.push({"todo_list":row.todo_list,"date_created":row.date_created,"id":row.ID,"status":row.status});
                 cnt = row.cnt;
             }
             
